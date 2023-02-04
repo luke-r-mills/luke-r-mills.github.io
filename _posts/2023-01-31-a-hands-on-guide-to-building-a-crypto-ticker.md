@@ -244,7 +244,7 @@ Looks good to me!
 
 ## Conclusion
 
-Overall, I'm happy with how everything turned out. I also wrote an [instruction manual](https://drive.google.com/file/d/1oRMSnJ5hCsDvF1AvCW1pmuY895ZvOt5e/view?usp=sharing) which goes into more detail about all the functionality the device has. It was great to dip my toes into some very basic PCB design and 3D printing!
+Overall, I'm happy with how everything turned out. I also wrote an [instruction manual](https://drive.google.com/file/d/1oRMSnJ5hCsDvF1AvCW1pmuY895ZvOt5e/view?usp=sharing) which goes into more detail about all the functionality the device has. It was great to dip my toes into some very basic PCB design and 3D printing! All of the code/resources discussed in this blog are available in the [Github Repository](https://github.com/luke-r-mills/ESPIR-Crypto-Ticker)!
 
 ![finished.gif]({{site.baseurl}}/assets/images/a_hands_on_guide_to_building_a_crypto_ticker/finished.gif)
 
