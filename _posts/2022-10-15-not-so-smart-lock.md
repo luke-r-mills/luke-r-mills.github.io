@@ -1,5 +1,6 @@
 ---
 published: true
+title : "Not-so-smart Lock"
 header:
   teaser: /assets/images/not_so_smart_lock/teaser.PNG
 ---
