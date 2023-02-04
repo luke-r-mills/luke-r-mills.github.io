@@ -146,13 +146,13 @@ Interesting, the data pins connect directly to the pins for Serial Wire Debug (S
 
 Using the STM32CubeDebugger's *live update* debug mode allows you to view the contents of the SRAM in almost real-time. While monitoring the SRAM, I noticed that if you entered a correct password/scanned a registered RFID card, the plaintext passcode/UID would appear in the SRAM for a brief period before being cleared. This makes sense, the passcode/UID has to go somewhere once its entered. 
 
-At one point however, I mistyped the password, and I saw the correct password pop-up in the SRAM at address *0xa00* (SRAM starts at *0x20000000*, so *0x20000a00*). This means that you can walk up to one of these locks, hook up your STLINK-V2, enter an incorrect password, and (if you are quick enough) read out a valid passcode! The must be loading the plaintext password to compare to the entered code - not the best idea.
+At one point however, I mistyped the password, and I saw the correct password pop-up in the SRAM at address *0xa00* (SRAM starts at *0x20000000*, so *0x20000a00*). This means that you can walk up to one of these locks, hook up your STLINK-V2, enter an incorrect password, and (if you are quick enough) read out a valid passcode! They must be loading the plaintext password to compare to the entered code - not the best idea.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/OqZwMvRScLg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### Attack 2 : Stack
 
-The next attack is really simple (and you can also do the same thing to get an RFID UID), it exploits the fact that the contents of the external EEPROM are loaded into the stack when you enter STM32CubeDebuggers *live update* mode:
+The next attack is really simple (and you can also do the same thing to get an RFID UID), it exploits the fact that the contents of the external EEPROM are loaded into the stack when you enter any STM32CubeDebugger blocking debug mode:
 - Hook up an STLINK-V2 to the USB port of the lock
 - Turn the lock on by touching the keypad/attempting a fingerprint unlock
 - Enter the `st-info --probe` command to enter debug mode
