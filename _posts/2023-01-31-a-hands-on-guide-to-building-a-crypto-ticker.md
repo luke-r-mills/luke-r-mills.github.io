@@ -13,7 +13,7 @@ tagline: "I wanted to create something that I could use to monitor current price
 header:
   overlay_filter: 0.4
   teaser: /assets/images/a_hands_on_guide_to_building_a_crypto_ticker/teaser.jpg
-  overlay_image: /assets/images/a_hands_on_guide_to_building_a_crypto_ticker/header.PNG
+  overlay_image: /assets/images/a_hands_on_guide_to_building_a_crypto_ticker/teaser.jpg
   #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
 

@@ -9,7 +9,7 @@ tags:
 tagline: "Join me as I take a closer look at a budget games console. I'll be disassembling it, evaluating the hardware, and exploring its features to gain a better understanding of the device. Let's dive in and see what we can learn."
 header:
   teaser: /assets/images/cheap_and_cheerful_400_in_1/controller.png
-  overlay_image: /assets/images/cheap_and_cheerful_400_in_1/header.png
+  overlay_image: /assets/images/cheap_and_cheerful_400_in_1/header.PNG
   overlay_filter: 0.4
   #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
