@@ -3,10 +3,12 @@ published: true
 title : "Cheap Games Console + Controller Teardown"
 categories:
   - Hardware
+  - Reverse Engineering
 tags:
   - Retro Gaming
   - Aliexpress
 tagline: "Join me as I take a closer look at a budget games console. I'll be disassembling it, evaluating the hardware, and exploring its features to gain a better understanding of the device. Let's dive in and see what we can learn."
+excerpt: "Lets examine a budget games console. I'll disassemble it, and explore its hardware/features to fully understand the device. Let's dive in."
 header:
   teaser: /assets/images/cheap_and_cheerful_400_in_1/controller.png
   overlay_image: /assets/images/cheap_and_cheerful_400_in_1/header.PNG

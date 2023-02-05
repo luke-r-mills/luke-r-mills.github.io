@@ -3,11 +3,13 @@ published: true
 title : "Analysing a Dirt-cheap Router"
 categories:
   - Hardware
-  - Cybersecurity
+  - Reverse Engineering
 tags:
   - Python
   - Debug Interfaces
+  - Aliexpress
 tagline: "Is it possible for a router that costs as much as a typical takeaway to also provide adequate security? In this article, we explore the security features of the least expensive router found on Aliexpress and aim to find the answer."
+excerpt : "Can a cheap router provide good security? This article investigates by examining the security features of the least expensive router on Aliexpress."
 header:
   teaser: /assets/images/analysing_a_dirt_cheap_router/mcu.jpg
   overlay_image: /assets/images/analysing_a_dirt_cheap_router/mcu.jpg

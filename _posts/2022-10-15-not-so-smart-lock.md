@@ -3,12 +3,12 @@ published: true
 title : "Not-so-smart Lock"
 categories:
   - Hardware
-  - Cybersecurity
+  - Reverse Engineering
 tags:
   - IoT
   - Debug Interfaces
-  - Aliexpress
 tagline: "Discover the inner workings of smart door locks with me. I'll be sharing my project findings in this blog, offering a closer look at this technology, while exposing some of its flaws."
+excerpt: "Explore a smart door lock with me. I'll share my findings and reveal both interesting aspects of its implementation, as well as its flaws, in this blog."
 header:
   teaser: /assets/images/not_so_smart_lock/teaser.PNG
   overlay_image: /assets/images/not_so_smart_lock/header.png

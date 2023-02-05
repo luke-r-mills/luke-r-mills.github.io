@@ -10,6 +10,7 @@ tags:
   - PCB Design
   - 3D Printing
 tagline: "I wanted to create something that I could use to monitor current prices for various crytpocurrencies, as well as my portfolio, at just a glance away from my screen. There existed some implementations for ESP8266 (small micro-controller devices), but they were all lacking, so I decided to make my own!"
+excerpt : "I made a cryptocurrency monitoring tool to check coin prices and portfolio value at a glance. Existing ESP8266 solutions were lacking, so I made my own."
 header:
   overlay_filter: 0.4
   teaser: /assets/images/a_hands_on_guide_to_building_a_crypto_ticker/teaser.jpg
@@ -226,7 +227,7 @@ Now we have the PCB put together, and everything fits first time (somehow), lets
 
 ### Attempt 1
 
-I used [Tinkercad](https://www.tinkercad.com/ to create the enclosure, it's really easy to use and reminds me of Google sketchup. Again, there are plenty of tutorials kicking about, as well as a library of models other people have made.
+I used [Tinkercad](https://www.tinkercad.com/) to create the enclosure, it's really easy to use and reminds me of Google sketchup. Again, there are plenty of tutorials kicking about, as well as a library of models other people have made.
 
 Here is the first design I came up with:
 
