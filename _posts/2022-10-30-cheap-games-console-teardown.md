@@ -1,9 +1,18 @@
 ---
 published: true
+title : "Cheap Games Console + Controller Teardown"
+categories:
+  - Hardware
+tags:
+  - Retro Gaming
+  - Aliexpress
+tagline: "Join me as I take a closer look at a budget games console. I'll be disassembling it, evaluating the hardware, and exploring its features to gain a better understanding of the device. Let's dive in and see what we can learn."
 header:
   teaser: /assets/images/cheap_and_cheerful_400_in_1/controller.png
+  overlay_image: /assets/images/cheap_and_cheerful_400_in_1/header.png
+  overlay_filter: 0.4
+  #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
-Join me as I take a closer look at a budget games console. I'll be disassembling it, evaluating the hardware, and exploring its features to gain a better understanding of the device. Let's dive in and see what we can learn.
 
 The device is an [£11 retro gaming device with 400 games](https://www.aliexpress.com/item/4000091808399.html?spm=a2g0o.order_list.0.0.21ef1802xgcF5t), the cheapest I could find. Tom Nardi wrote a [great article](https://hackaday.com/2019/12/09/teardown-168-in-1-retro-handheld-game/#more-387984) about a similar device, there will likely be some crossover with said article. I am sure this device hasn't changed much in the last 3 years!
 

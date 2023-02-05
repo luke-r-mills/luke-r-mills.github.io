@@ -1,11 +1,21 @@
 ---
 published: true
 title : "A Hands-on Guide to Building a Crypto Ticker"
+categories:
+  - Coding
+tags:
+  - ESP8266
+  - Arduino
+  - C++
+  - PCB Design
+  - 3D Printing
+tagline: "I wanted to create something that I could use to monitor current prices for various crytpocurrencies, as well as my portfolio, at just a glance away from my screen. There existed some implementations for ESP8266 (small micro-controller devices), but they were all lacking, so I decided to make my own!"
 header:
+  overlay_filter: 0.4
   teaser: /assets/images/a_hands_on_guide_to_building_a_crypto_ticker/teaser.jpg
+  overlay_image: /assets/images/a_hands_on_guide_to_building_a_crypto_ticker/teaser.jpg
+  #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
-
-I wanted to create something that I could use to monitor current prices for various crytpocurrencies, as well as my portfolio, at just a glance away from my screen. There existed some implementations for ESP8266 (small micro-controller devices), but they were all lacking, so I decided to make my own!
 
 This blog highlights how I built my crypto ticker from scratch, and also act as a guide if you wanted to take my designs and construct your own! This blog is full of personal firsts - designing a very simple PCB, creating a 3D printed model, and interacting with API's using the ESP8266.
 
@@ -244,7 +254,7 @@ Looks good to me!
 
 ## Conclusion
 
-Overall, I'm happy with how everything turned out. I also wrote an [instruction manual](https://drive.google.com/file/d/1oRMSnJ5hCsDvF1AvCW1pmuY895ZvOt5e/view?usp=sharing) which goes into more detail about all the functionality the device has. It was great to dip my toes into some very basic PCB design and 3D printing! All of the code/resources discussed in this blog are available in the [Github Repository](https://github.com/luke-r-mills/ESPIR-Crypto-Ticker)!
+Overall, I'm happy with how everything turned out. I also wrote an [instruction manual](https://drive.google.com/file/d/1oRMSnJ5hCsDvF1AvCW1pmuY895ZvOt5e/view?usp=sharing) which goes into more detail about all the functionality the device has. It was great to dip my toes into some very basic PCB design and 3D printing. All of the code/resources discussed in this blog are available in the [Github Repository](https://github.com/luke-r-mills/ESPIR-Crypto-Ticker)!
 
 ![finished.gif]({{site.baseurl}}/assets/images/a_hands_on_guide_to_building_a_crypto_ticker/finished.gif)
 

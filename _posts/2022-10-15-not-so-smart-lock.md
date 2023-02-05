@@ -1,16 +1,26 @@
 ---
 published: true
 title : "Not-so-smart Lock"
+categories:
+  - Hardware
+  - Cybersecurity
+tags:
+  - IoT
+  - Debug Interfaces
+  - Aliexpress
+tagline: "Discover the inner workings of smart door locks with me. I'll be sharing my project findings in this blog, offering a closer look at this technology, while exposing some of its flaws."
 header:
   teaser: /assets/images/not_so_smart_lock/teaser.PNG
+  overlay_image: /assets/images/not_so_smart_lock/header.png
+  overlay_filter: 0.4
+  #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
-Discover the inner workings of smart door locks with me. I'll be sharing my project findings in this blog, offering a closer look at this technology, while exposing some of its flaws.
+
+The target for this investigation is the Pineworld Q203 smart lock. The lock has several unlocking mechanisms, this blog will focus on the physical entry mechanisms, as these findings are the most interesting. These mechanisms are Fingerprint, RFID, and Numerical Passcode. It is designed to replace a conventional door handle and is full of interesting functionality. 
 
 ![rsz_1lock.png]({{site.baseurl}}/assets/images/not_so_smart_lock/rsz_1lock.png)
 
-## Device Overview
-
-The target for this investigation is the Pineworld Q203 smart lock. The lock has several unlocking mechanisms, this blog will focus on the physical entry mechanisms, as these findings are the most interesting. These mechanisms are Fingerprint, RFID, and Numerical Passcode. It is designed to replace a conventional door handle and is full of interesting functionality. See below a full threat model for the device:
+See below a full threat model for the device:
 
 ![threat_model2.png]({{site.baseurl}}/assets/images/not_so_smart_lock/threat_model2.png)
 

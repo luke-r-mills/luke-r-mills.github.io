@@ -1,16 +1,23 @@
 ---
 published: true
+title : "Analysing a Dirt-cheap Router"
+categories:
+  - Hardware
+  - Cybersecurity
+tags:
+  - Python
+  - Debug Interfaces
+tagline: "Is it possible for a router that costs as much as a typical takeaway to also provide adequate security? In this article, we explore the security features of the least expensive router found on Aliexpress and aim to find the answer."
 header:
   teaser: /assets/images/analysing_a_dirt_cheap_router/mcu.jpg
+  overlay_image: /assets/images/analysing_a_dirt_cheap_router/mcu.jpg
+  overlay_filter: 0.4
+  #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
 
-Is it possible for a router that costs as much as a typical takeaway to also provide adequate security? In this article, we explore the security features of the least expensive router found on Aliexpress and aim to find the answer.
-
-## Target
+The target for this investigation is a [CHANEVE](https://www.aliexpress.com/item/32828192776.html) router. It doesn't really have a part number, the actual title of the listing is '*CHANEVE 300Mbps Wireless Repeater Router 802.11N wifi router with Extended Range Rj45 Home camera Surveillance Network Router*', if that narrows it down. At the time of writing, it costs a whopping £12.23 including shipping (after all the extra fees, its about £15).
 
 ![router.jpg]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router/router.png)
-
-The target for this investigation is a [CHANEVE](https://www.aliexpress.com/item/32828192776.html) router. It doesn't really have a part number, the actual title of the listing is '*CHANEVE 300Mbps Wireless Repeater Router 802.11N wifi router with Extended Range Rj45 Home camera Surveillance Network Router*', if that narrows it down. At the time of writing, it costs a whopping £12.23 including shipping (after all the extra fees, its about £15).
 
 ## Port Scanning
 
