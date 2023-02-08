@@ -13,7 +13,7 @@ excerpt : "Three.js is a JavaScript library that utilises WebGL to create and di
 header:
   overlay_filter: 0.4
   teaser: /assets/images/making_a_vaporwave_game_with_three_js/postprocessing.PNG
-  overlay_image: /assets/images/making_a_vaporwave_game_with_three_js/header.PNG
+  overlay_image: /assets/images/making_a_vaporwave_game_with_three_js/header.png
   #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
 
