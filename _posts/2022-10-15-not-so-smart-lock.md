@@ -1,6 +1,8 @@
 ---
 published: true
 title : "Not-so-smart Lock"
+toc: true
+toc_sticky: true
 categories:
   - Hardware
   - Reverse Engineering

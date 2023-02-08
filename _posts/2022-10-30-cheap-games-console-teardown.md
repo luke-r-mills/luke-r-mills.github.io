@@ -1,6 +1,8 @@
 ---
 published: true
 title : "Cheap Games Console + Controller Teardown"
+toc: true
+toc_sticky: true
 categories:
   - Hardware
   - Reverse Engineering
@@ -112,7 +114,7 @@ It would be rude of me to not use this in an actual game, so I ported an [implem
 
 ![snake.jpg]({{site.baseurl}}/assets/images/cheap_and_cheerful_400_in_1/snake.jpg)
 
-### Getting Firmware/Emulation
+## Getting Firmware/Emulation
 
 To get the firmware from the device, it is necessary to desolder the pins with a heat gun (usually the easiest way). You can then use a flash programmer/reader to read the data from the chip, such as a FlashcatUSB xPort, or a TL866 programmer. As we are dealing with a parallel chip, we need to make sure that our programmer can handle the large number of pins. Something like a small microcontroller would not have enough GPIO pins to read this chip, you would need to add lots of shift registers to extend the number of GPIO pins.
 

@@ -1,6 +1,8 @@
 ---
 published: true
 title : "Analysing a Dirt-cheap Router"
+toc: true
+toc_sticky: true
 categories:
   - Hardware
   - Reverse Engineering
