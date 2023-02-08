@@ -685,7 +685,18 @@ Finally, I added a pause menu - allowing the player to pause the game with the *
 
 ## Final Result
 
-The game is below, it should be playable if you are viewing on a device with a keyboard, just press START!
+The controls and game are below, it should be playable if you are viewing on a device with a keyboard - just click **START**. Here are the controls:
+- **W** : Move up
+- **A** : Move left
+- **S** : Move down
+- **D** : Move right
+- **H** : Activate hyperdrive
+- **Esc** : Pause the game
+- **C** : Change camera mode
+- **M** : Toggle sound enabled
+- **P** : Toggle the Postprocessing effects
+
+***Note:*** *Works well on Edge, Chrome, and Firefox*
 
 <html lang="en">
   <head>
@@ -1063,8 +1074,14 @@ The game is below, it should be playable if you are viewing on a device with a k
       function onMouseDown(event) {
 	    const canvas = renderer.domElement;
         var pressed = menu.checkForPress(camera, canvas, event);
-
-        if (pressed == "Start" && !menu.isPaused()) {	
+		
+		if (pressed == "Postprocessing"){
+          togglePostProcessing();
+        } else if (pressed == "Mute"){
+          toggleAudio();
+        } else if (pressed == "Start" && !menu.isPaused()) {	
+		  bg_music.play();
+		
           menu.setActive(false);
 
           last_time = Math.round(new Date().getTime() / 1000);
@@ -1073,10 +1090,6 @@ The game is below, it should be playable if you are viewing on a device with a k
 
           // If the game was over, restart it
           if (game_over) reset();
-        } else if (pressed == "Postprocessing"){
-          togglePostProcessing();
-        } else if (pressed == "Mute"){
-          toggleAudio();
         }
       }
 
@@ -1105,8 +1118,14 @@ The game is below, it should be playable if you are viewing on a device with a k
       function keyControls() {
         document.onkeydown = function (e) {
           switch (e.keyCode) {
-		    case 77: // Mouse controls (m key)
-              mouse_controls = !mouse_controls;
+			case 80: // Toggles postprocessing with p
+              togglePostProcessing();
+              break;
+			case 66:
+			  mouse_controls = !mouse_controls;
+              break;
+		    case 77: // Mute audio (m key)
+              toggleAudio();
               break;
             case 65: // Move left
               if (
@@ -1259,7 +1278,6 @@ The game is below, it should be playable if you are viewing on a device with a k
             bg_music.setBuffer(buffer);
             bg_music.setLoop(true);
             bg_music.setVolume(0.5);
-            bg_music.play();
           },
           undefined,
           function (error) {
@@ -1684,4 +1702,3 @@ The game is below, it should be playable if you are viewing on a device with a k
     </script>
   </body>
 </html>
-
