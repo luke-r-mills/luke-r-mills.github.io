@@ -88,7 +88,7 @@ The function starts by setting up a HTTPClient and a WiFiClient, these will be u
 
 The above API request is requesting the price information for `bitcoin`, `ethereum`, and `cardano` in GBP (the currency can be changed between GBP, USD and EUR on this device). The API then responds with the contents which is parsed using a HTTP stream into an [ArduinoJson](https://arduinojson.org/) document. Here is the API response to the above sample:
 
-```
+```json
 {
   "ethereum": {
     "gbp": 1395.22
@@ -104,42 +104,42 @@ The above API request is requesting the price information for `bitcoin`, `ethere
 
 Each coin response is handled one by one by using the HTTP stream, this means we can use a smaller ArduinoJson document to reduce memory usage. Here is the code that does this:
 
-```
-	// Parse incoming JSON from stream
-    http.getStream().find("\"");
-    do {
-        read_bytes = http.getStream().readBytesUntil('"', id_buffer, 32);
-        id_buffer[read_bytes] = 0;
-        
-        http.getStream().find(':');
-        deserializeJson(doc, http.getStream());
+```c
+// Parse incoming JSON from stream
+http.getStream().find("\"");
+do {
+  read_bytes = http.getStream().readBytesUntil('"', id_buffer, 32);
+  id_buffer[read_bytes] = 0;
 
-        // Add to coin or portfolio
-        if (app_mode == 1) {
-          for (int i = 0; i < selected_coins_count; i++) {
-            if (strcmp(id_buffer, selected_coins[i] -> coin_id) == 0 
-                && doc[currency_options_lower[selected_currency]] > 0){
-              selected_coins[i] -> current_price = doc[currency_options_lower[selected_currency]];
-              selected_coins[i] -> current_change = doc[currency_options_changes[selected_currency]];
-              selected_coins[i] -> candles -> addPrice(doc[currency_options_lower[selected_currency]]);
-              break;
-            }
-          }
-        } else if (app_mode == 2) {
-          int j = 0;
-          while (portfolio_editor->selected_portfolio_indexes[j] != -1) {
-            if (strcmp(id_buffer, coins[portfolio_editor->selected_portfolio_indexes[j]].coin_id) == 0 
-                && doc[currency_options_lower[selected_currency]] > 0){
-              coins[portfolio_editor->selected_portfolio_indexes[j]].current_price =
-                  doc[currency_options_lower[selected_currency]];
-              coins[portfolio_editor->selected_portfolio_indexes[j]].current_change =
-                  doc[currency_options_changes[selected_currency]];
-              break;
-            }
-            j++;
-          }
-        }
-    } while (http.getStream().findUntil(",\"", "}")); // Continue until last '}' reached
+  http.getStream().find(':');
+  deserializeJson(doc, http.getStream());
+
+  // Add to coin or portfolio
+  if (app_mode == 1) {
+    for (int i = 0; i < selected_coins_count; i++) {
+      if (strcmp(id_buffer, selected_coins[i] -> coin_id) == 0 &&
+        doc[currency_options_lower[selected_currency]] > 0) {
+        selected_coins[i] -> current_price = doc[currency_options_lower[selected_currency]];
+        selected_coins[i] -> current_change = doc[currency_options_changes[selected_currency]];
+        selected_coins[i] -> candles -> addPrice(doc[currency_options_lower[selected_currency]]);
+        break;
+      }
+    }
+  } else if (app_mode == 2) {
+    int j = 0;
+    while (portfolio_editor -> selected_portfolio_indexes[j] != -1) {
+      if (strcmp(id_buffer, coins[portfolio_editor -> selected_portfolio_indexes[j]].coin_id) == 0 &&
+        doc[currency_options_lower[selected_currency]] > 0) {
+        coins[portfolio_editor -> selected_portfolio_indexes[j]].current_price =
+          doc[currency_options_lower[selected_currency]];
+        coins[portfolio_editor -> selected_portfolio_indexes[j]].current_change =
+          doc[currency_options_changes[selected_currency]];
+        break;
+      }
+      j++;
+    }
+  }
+} while (http.getStream().findUntil(",\"", "}")); // Continue until last '}' reached
 ```
 
 The function also shows how the information retrieved from the API request is loaded into the respective objects, for both the coin and portfolio modes. I chose to use this method in order to reduce overall memory usage as having huge buffers on the heap was causing some crashes (the WiFi/HTTP elements use a lot of memory!).

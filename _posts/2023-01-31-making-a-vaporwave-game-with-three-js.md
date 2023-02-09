@@ -46,19 +46,16 @@ Start by creating your HTML document, it should look something like this:
   <head>
     <title>VaporRacer</title>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, minimum-scale=1, maximum-scale=1"
-    />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1, maximum-scale=1" />
   </head>
   <body>
     <div id="container"></div>
-	  import * as THREE from "/assets/three.js/build/three.module.js";
-		
-	  /* This is where our JavaScript goes */
     <script type="module">
+      import * as THREE from "/assets/three.js/build/three.module.js";
+      /* This is where our JavaScript goes */
     </script>
   </body>
+</html>
 </html>
 ```
 
@@ -68,16 +65,18 @@ The first things you need to configure are the renderer and the scene (what gets
 
 ```javascript
 // To get the containing HTML element
-container = document.getElementById("container"); 
+container = document.getElementById("container");
 
 // Initialise scene
 scene = new THREE.Scene();
-		
+
 // Define the renderer
-renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer = new THREE.WebGLRenderer({
+  antialias: true
+});
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(document.getElementById("container").clientWidth, 
-	document.getElementById("container").clientWidth * 9/16);
+renderer.setSize(document.getElementById("container").clientWidth,
+  document.getElementById("container").clientWidth * 9 / 16);
 container.appendChild(renderer.domElement);
 ```
 
@@ -117,7 +116,7 @@ The first task was to generate the heights used by the mesh that will act as the
 I used three.js `ImprovedNoise` to generate the heights, [this example](https://threejs.org/examples/webgl_geometry_terrain.html) was very useful for this. I also added some variables that would completely flatten the area in the middle of the mesh, and also make the height of the mountains peak in the middle of the two sides - this hides any dodgy edge lines and keeps everything looking smooth.
 
 ```javascript
-this.generateHeight = function (width, height) {
+this.generateHeight = function(width, height) {
   const size = width * height,
     data = new Uint8Array(size);
   let quality = 50;
@@ -157,39 +156,41 @@ Now that we have some heights generated, we need to create our texture to go ont
 With both of these ingredients completed, we can now generate the meshes that will be used with the following function:
 
 ```javascript
-this.initialiseFloors = function (scene, z_offset) {
-	// For floor mesh 1
-	var data = this.generateHeight(this.worldWidth, this.worldDepth);
-	var geometry = new THREE.PlaneGeometry(
-	  this.plane_x,
-	  this.plane_y,
-	  this.worldWidth - 1,
-	  this.worldDepth - 1
-	);
-	geometry.rotateX(-Math.PI / 2);
+this.initialiseFloors = function(scene, z_offset) {
+  // For floor mesh 1
+  var data = this.generateHeight(this.worldWidth, this.worldDepth);
+  var geometry = new THREE.PlaneGeometry(
+    this.plane_x,
+    this.plane_y,
+    this.worldWidth - 1,
+    this.worldDepth - 1
+  );
+  geometry.rotateX(-Math.PI / 2);
 
-	// Amplify the generated height y values, and move down by z offset
-	var vertices = geometry.attributes.position.array;
-	for (let i = 0, j = 0, l = vertices.length; i < l; i++, j += 3) {
-	  vertices[j + 1] = data[i] * 10;
-	  vertices[j + 2] -= z_offset;
-	}
+  // Amplify the generated height y values, and move down by z offset
+  var vertices = geometry.attributes.position.array;
+  for (let i = 0, j = 0, l = vertices.length; i < l; i++, j += 3) {
+    vertices[j + 1] = data[i] * 10;
+    vertices[j + 2] -= z_offset;
+  }
 
-	// Generate the first floor panel texture and mesh
-	this.floor_texture_1 = new THREE.CanvasTexture(
-	  this.generateTexture(data, this.worldWidth, this.worldDepth, false)
-	);
-	this.floor_texture_1.wrapS = THREE.ClampToEdgeWrapping;
-	this.floor_texture_1.wrapT = THREE.ClampToEdgeWrapping;
+  // Generate the first floor panel texture and mesh
+  this.floor_texture_1 = new THREE.CanvasTexture(
+    this.generateTexture(data, this.worldWidth, this.worldDepth, false)
+  );
+  this.floor_texture_1.wrapS = THREE.ClampToEdgeWrapping;
+  this.floor_texture_1.wrapT = THREE.ClampToEdgeWrapping;
 
-	this.floor_mesh_1 = new THREE.Mesh(
-	  geometry,
-	  new THREE.MeshBasicMaterial({ map: this.floor_texture_1 })
-	);
-	this.floor_mesh_1.name = "Floor Mesh 1";
-	scene.add(this.floor_mesh_1);
-	
-	// Do the same for the second panel ...
+  this.floor_mesh_1 = new THREE.Mesh(
+    geometry,
+    new THREE.MeshBasicMaterial({
+      map: this.floor_texture_1
+    })
+  );
+  this.floor_mesh_1.name = "Floor Mesh 1";
+  scene.add(this.floor_mesh_1);
+
+  // Do the same for the second panel ...
 };
 ```
 
@@ -204,7 +205,7 @@ Lets see how it looks:
 The next job is to add the sun to the scene, all I had to do was add a circular mesh, and colour it with a gradient using a shader:
 
 ```javascript
-this.initialiseSun = function (scene) {
+this.initialiseSun = function(scene) {
   // Init sun geometry
   const sun_shape = new THREE.Shape();
   sun_shape.absarc(0, 0, 8000);
@@ -266,7 +267,7 @@ Lighting is a very important aspect of the game, especially now that the buildin
 
 You can see the initialisation of the light sources below:
 ```javascript
-this.initialiseLighting = function (scene, camera) {
+this.initialiseLighting = function(scene, camera) {
   // Add ambient light
   const color = 0xffffff;
   const intensity = 0.2;
@@ -325,7 +326,7 @@ composer.render(delta_time);
 Once the composer is initialised, you can start adding passes with the `addPass` function. I imported a bloom pass (*UnrealBloomPass*) that comes with three.js as this makes brighter elements stand out, and improves the visual appearance of the game. To add this pass, I added the following to the *init* function after I added the *RenderPass*:
 ```javascript
 bloomPass = new UnrealBloomPass(
-          10, 0.75, 1, 0.6);
+  10, 0.75, 1, 0.6);
 composer.addPass(bloomPass);
 ```
 
@@ -337,15 +338,17 @@ To get the CRT effect, I will need to create my own shader, and utilise the *Sha
 // Initialise the crt shader
 const crtShader = {
   uniforms: {
-    tDiffuse: { value: null },
+    tDiffuse: {
+      value: null
+    },
   },
   vertexShader: `
     varying vec2 vUv;
 
     void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * 
-			modelViewMatrix * vec4(position, 1);
+      vUv = uv;
+      gl_Position = projectionMatrix * 
+	    modelViewMatrix * vec4(position, 1);
     }`,
   fragmentShader: `
     #define SCAN_LINE_DENSITY 1000.0
@@ -355,42 +358,42 @@ const crtShader = {
     uniform sampler2D tDiffuse;
 
     void main() {
-        // Curve amounts for x and y
-        vec2 curve = vec2(0.2, 0.4); 
+      // Curve amounts for x and y
+      vec2 curve = vec2(0.2, 0.4); 
 
-        // Distances from the center
-        vec2 distances = vec2(abs(0.5 - vUv.x), 
-            abs(0.5 - vUv.y));
+      // Distances from the center
+      vec2 distances = vec2(abs(0.5 - vUv.x), 
+          abs(0.5 - vUv.y));
 
-        // Square the distances to smooth the edges
-        distances *= distances;
+      // Square the distances to smooth the edges
+      distances *= distances;
 
-        // Modifiable vUv
-        vec2 vUv_copy = vec2(vUv.x, vUv.y);
+      // Modifiable vUv
+      vec2 vUv_copy = vec2(vUv.x, vUv.y);
 
-        // Apply the curvature
-        vUv_copy.x -= 0.5;
-        vUv_copy.x *= 1.0 + (distances.y * curve.x);
-        vUv_copy.x += 0.5;
+      // Apply the curvature
+      vUv_copy.x -= 0.5;
+      vUv_copy.x *= 1.0 + (distances.y * curve.x);
+      vUv_copy.x += 0.5;
 
-        vUv_copy.y -= 0.5;
-        vUv_copy.y *= 1.0 + (distances.x * curve.y);
-        vUv_copy.y += 0.5;
+      vUv_copy.y -= 0.5;
+      vUv_copy.y *= 1.0 + (distances.x * curve.y);
+      vUv_copy.y += 0.5;
 
-        // Get texture pixel
-        vec4 tex_pixel = texture2D(tDiffuse, 
-            vec2(vUv_copy.x, vUv_copy.y));
+      // Get texture pixel
+      vec4 tex_pixel = texture2D(tDiffuse, 
+          vec2(vUv_copy.x, vUv_copy.y));
 
-        // Add scanline
-        tex_pixel.rgb += 0.1 * sin(vUv_copy.y * SCAN_LINE_DENSITY);
+      // Add scanline
+      tex_pixel.rgb += 0.1 * sin(vUv_copy.y * SCAN_LINE_DENSITY);
 
-        /* Cut off the corners by setting corners to black 
-        if not in range */
-        if(vUv_copy.x > 1.0 || vUv_copy.y > 1.0 || 
-          vUv_copy.x < 0.0 || vUv_copy.y < 0.0)
-            tex_pixel = vec4(0.94, 0.83, 0.706, 1);
+      /* Cut off the corners by setting corners to black 
+      if not in range */
+      if(vUv_copy.x > 1.0 || vUv_copy.y > 1.0 || 
+        vUv_copy.x < 0.0 || vUv_copy.y < 0.0)
+          tex_pixel = vec4(0.94, 0.83, 0.706, 1);
 
-        gl_FragColor = tex_pixel;
+      gl_FragColor = tex_pixel;
     }`,
 };
 
@@ -415,24 +418,24 @@ const modelLoader = new GLTFLoader();
 // Load the car mesh
 modelLoader.load(
   "/assets/VaporRacerAssets/Models/car.glb",
-  function (gltf) {
-	car_mesh = gltf.scene.children.find(
-	  (child) => child.name === "Car"
-	);
-	car_mesh.scale.set(
-	  car_mesh.scale.x * 200,
-	  car_mesh.scale.y * 200,
-	  car_mesh.scale.z * 200
-	);
-	car_mesh.position.y = 375;
-	car_mesh.position.z = 1000;
-	car_mesh.name = "Car_mesh";
+  function(gltf) {
+    car_mesh = gltf.scene.children.find(
+      (child) => child.name === "Car"
+    );
+    car_mesh.scale.set(
+      car_mesh.scale.x * 200,
+      car_mesh.scale.y * 200,
+      car_mesh.scale.z * 200
+    );
+    car_mesh.position.y = 375;
+    car_mesh.position.z = 1000;
+    car_mesh.name = "Car_mesh";
 
-	scene.add(car_mesh);
+    scene.add(car_mesh);
   },
   undefined,
-  function (error) {
-	console.error(error);
+  function(error) {
+    console.error(error);
   }
 );
 ```
@@ -446,18 +449,18 @@ To stop the game from using outrageously large distances, instead of moving the 
 I put all of the scenery into its own class, as it is much easier to manage - here is the function that moves the scenery:
 
 ```javascript
-this.move = function (scene, speed) {
+this.move = function(scene, speed) {
   for (let i = 0; i < this.buildings.length; i++) {
     if (this.buildings[i] != undefined) {
-	  // Move buildings towards player
-	  this.buildings[i].position.z += speed;
-	  this.building_tops[i].position.z += speed;
+      // Move buildings towards player
+      this.buildings[i].position.z += speed;
+      this.building_tops[i].position.z += speed;
 
-	  // Move back if out of view
-	  if (this.buildings[i].position.z > -250) {
-	    this.buildings[i].position.z -= 50000;
-	    this.building_tops[i].position.z -= 50000;
-  	  }
+      // Move back if out of view
+      if (this.buildings[i].position.z > -250) {
+        this.buildings[i].position.z -= 50000;
+        this.building_tops[i].position.z -= 50000;
+      }
     }
   }
 
@@ -472,29 +475,29 @@ Adding the speed and ambient movement to the car was simple enough. As with the 
 ```javascript
 // Move car forwards when game started
 if (this.car_mesh.position.z > -2500)
-	this.car_mesh.position.z += (-2500 - this.car_mesh.position.z) * 0.05;
+  this.car_mesh.position.z += (-2500 - this.car_mesh.position.z) * 0.05;
 
 // Update car speed
 if (!this.lane_change && !this.height_change) {
-	if (this.car_speed < this.initial_max_speed)
-		this.car_speed +=
-			(this.initial_max_speed - this.car_speed) / this.initial_max_speed;
+  if (this.car_speed < this.initial_max_speed)
+    this.car_speed +=
+    (this.initial_max_speed - this.car_speed) / this.initial_max_speed;
 
-	if (this.car_speed < this.car_speed_cap)
-		this.car_speed +=
-			0.05 *
-			(this.car_speed_cap - this.car_speed) / this.car_speed_cap;
+  if (this.car_speed < this.car_speed_cap)
+    this.car_speed +=
+    0.05 *
+    (this.car_speed_cap - this.car_speed) / this.car_speed_cap;
 
-	if (this.car_speed > this.initial_max_speed)
-		this.lane_change_iters = 45 - Math.round(this.car_speed / 10);
+  if (this.car_speed > this.initial_max_speed)
+    this.lane_change_iters = 45 - Math.round(this.car_speed / 10);
 }
 
 // Ambient movement
 if (!this.lane_change && this.car_mesh != undefined) {
-	this.car_mesh.rotation.z =
-		Math.sin((this.sin_z += 0.05 * Math.random())) / 10;
-	this.car_mesh.rotation.y =
-		Math.sin((this.sin_y += 0.03 * Math.random())) / 25;
+  this.car_mesh.rotation.z =
+    Math.sin((this.sin_z += 0.05 * Math.random())) / 10;
+  this.car_mesh.rotation.y =
+    Math.sin((this.sin_y += 0.03 * Math.random())) / 25;
 }
 ```
 
@@ -511,21 +514,21 @@ I also wanted to be able to access any square from any other square in a single 
 The key-press handling works by listening for key-presses on the HTML document. The car movement functions are pretty simple so I will omit them from the blog - they basically just move and rotate the car:
 
 ```javascript
-document.onkeydown = function (e) {
-  switch (e.keyCode) {
-	case 65: // Move left
-	  car.moveLeft();
-	  break;
-	case 68: // Move right
-	  car.moveRight();
-	  break;
-	case 87: // Move up
-	  car.moveUp();
-	  break;
-	case 83: // Move down
-	  car.moveDown();
-	  break;
-};
+document.onkeydown = function(e) {
+    switch (e.keyCode) {
+      case 65: // Move left
+        car.moveLeft();
+        break;
+      case 68: // Move right
+        car.moveRight();
+        break;
+      case 87: // Move up
+        car.moveUp();
+        break;
+      case 83: // Move down
+        car.moveDown();
+        break;
+    };
 ```
 
 So now we have a 'moving' car that we can control!
@@ -534,27 +537,32 @@ The game would not be complete without some sort of power-up, so I added the *hy
 
 ```javascript
 uniforms: {
-	tDiffuse: { value: null },
-	colour: { value: new THREE.Color(0xff28ffff) },}, 
-vertexShader: `
+    tDiffuse: {
+      value: null
+    },
+    colour: {
+      value: new THREE.Color(0xff28ffff)
+    },
+  },
+  vertexShader: `
 	varying vec2 vUv;
 	void main() {
-		vUv = uv;
-		gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1);
-	}`, 
-fragmentShader: `
+      vUv = uv;
+	  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1);
+	}`,
+  fragmentShader: `
 	uniform vec3 colour;
 	uniform sampler2D tDiffuse;
 	varying vec2 vUv;
 
 	void main() {
-		// Get previous pass colours
-		vec4 previousPassColour = texture2D(tDiffuse, vUv);
+	  // Get previous pass colours
+	  vec4 previousPassColour = texture2D(tDiffuse, vUv);
 
-		// Set the new colour by multiplying old with desired colour
-		gl_FragColor = vec4(
-			previousPassColour.rgb * colour,
-			previousPassColour.a);
+	  // Set the new colour by multiplying old with desired colour
+	  gl_FragColor = vec4(
+		previousPassColour.rgb * colour,
+		previousPassColour.a);
 }`,
 ```
 
@@ -590,44 +598,42 @@ We need to be able to work out if a collision has occured between an object and 
 I added a function to the car class that takes an instance of the obstacles class, iterates over the current list of objects, and uses a [*Raycaster*](https://threejs.org/docs/index.html?q=RayC#api/en/core/Raycaster) object to detect collisions between the car hitbox and any of the objects:
 
 ```javascript
-this.collisionDetection = function (obstacles) {
-	if (this.car_hitbox != undefined) {
-		this.updateHitBox(); // Move the cars hit box to get recent position
+this.collisionDetection = function(obstacles) {
+  if (this.car_hitbox != undefined) {
+    this.updateHitBox(); // Move the cars hit box to get recent position
 
-		var originPoint = this.car_hitbox.position.clone();
-		const globalVector = new THREE.Vector3();
+    var originPoint = this.car_hitbox.position.clone();
+    const globalVector = new THREE.Vector3();
 
-		for (
-			var vertexIndex = 0;
-			vertexIndex < this.car_hitbox.geometry.attributes.position.count;
-			vertexIndex++
-		) {
-			// For ray direction
-			globalVector.fromBufferAttribute(
-				this.car_hitbox.geometry.attributes.position,
-				vertexIndex
-			);
-			globalVector.applyMatrix4(this.car_hitbox.matrixWorld);
+    for (
+      var vertexIndex = 0; vertexIndex < this.car_hitbox.geometry.attributes.position.count; vertexIndex++
+    ) {
+      // For ray direction
+      globalVector.fromBufferAttribute(
+        this.car_hitbox.geometry.attributes.position,
+        vertexIndex
+      );
+      globalVector.applyMatrix4(this.car_hitbox.matrixWorld);
 
-			var directionVector = globalVector.sub(this.car_hitbox.position);
+      var directionVector = globalVector.sub(this.car_hitbox.position);
 
-			// Create the raycast
-			var ray = new THREE.Raycaster(
-				originPoint,
-				directionVector.clone().normalize()
-			);
+      // Create the raycast
+      var ray = new THREE.Raycaster(
+        originPoint,
+        directionVector.clone().normalize()
+      );
 
-			// See if the ray intersects an obstacle
-			var collisionResults = ray.intersectObjects(obstacles.obstacles);
-			if (
-				collisionResults.length > 0 &&
-				collisionResults[0].distance < directionVector.length()
-			) {
-				return true;
-			}
-		}
-		return false;
-	}
+      // See if the ray intersects an obstacle
+      var collisionResults = ray.intersectObjects(obstacles.obstacles);
+      if (
+        collisionResults.length > 0 &&
+        collisionResults[0].distance < directionVector.length()
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 ```
 
@@ -652,28 +658,28 @@ I needed a way to display the current speed, and the current hyperdrive charge. 
 One of the last things we need is a menu for starting the game and adjusting settings. I added a button for turning on/off the postprocessing, muting audio, and starting the game. I used [cooltext.com](https://cooltext.com/) to generate the font used for the title and buttons, the bloom pass really makes it stand out! I added an event listener for mouse presses (`document.addEventListener("mousedown", onMouseDown, false);`), and shoot a raycast (using a [*Raycaster*](https://threejs.org/docs/index.html?q=RayC#api/en/core/Raycaster)) into the world, if this raycast intersects one of the buttons, the name of this button is returned and the appropriate action is taken!
 
 ```javascript
-this.checkForPress = function (overhead_camera, canvas, event) {	
-	this.mouse.x = (event.offsetX / canvas.width) * 2 - 1;
-	this.mouse.y = -(event.offsetY / canvas.height) * 2 + 1;
-	
-	// Set the raycaster for button press detection
-	this.raycaster.setFromCamera(this.mouse, overhead_camera);
+this.checkForPress = function(overhead_camera, canvas, event) {
+  this.mouse.x = (event.offsetX / canvas.width) * 2 - 1;
+  this.mouse.y = -(event.offsetY / canvas.height) * 2 + 1;
 
-	// Check if button was pressed 
-	var intersects = this.raycaster.intersectObjects(this.buttons);
-	if (intersects.length > 0) {
-		for (let i = 0; i < intersects.length; i++) {
-			if (intersects[i].object.name == "Start")
-				return "Start";
+  // Set the raycaster for button press detection
+  this.raycaster.setFromCamera(this.mouse, overhead_camera);
 
-			if (intersects[i].object.name == "Postprocessing")
-				return "Postprocessing";
-			
-			if (intersects[i].object.name == "Mute")
-				return "Mute";
-		}
-	}
-	return false;
+  // Check if button was pressed 
+  var intersects = this.raycaster.intersectObjects(this.buttons);
+  if (intersects.length > 0) {
+    for (let i = 0; i < intersects.length; i++) {
+      if (intersects[i].object.name == "Start")
+        return "Start";
+
+      if (intersects[i].object.name == "Postprocessing")
+        return "Postprocessing";
+
+      if (intersects[i].object.name == "Mute")
+        return "Mute";
+    }
+  }
+  return false;
 };
 ```
 

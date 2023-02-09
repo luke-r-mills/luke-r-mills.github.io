@@ -313,31 +313,37 @@ It is possible to brute force/password spray the admin password of the router. I
 Using the names of the threads, I was able to locate the function that creates the thread at address *0x8019acb0*. The function takes the thread priority, thread name, and the function to be run by the thread. There are some thread create calls that take parameters, so these needed a little bit more reversing.
 
 We now have the addresses for the thread functions:
-- Network alarm support : *0x8012d1f8*
-- Network support : *0x8012bb60*
-- cpuload : *0x8011fd70*
-- SYSLOG Daemon : *0x8015b998*
-- DHCP server : *0x8015a708*
-- DNS_daemon : *0x80198484*
-- NTP Client : *0x80195b10*
-- HTTPD_daemon : *0x800127fc*
-- HTTPD_proc : *0x80012458*
-- CLI_thread : *0x8011c6f0*
-- upnp_main : *0x801882e8*
-- monitor_thread : *0x800059f0*
-- extender_check : *0x8000376c*
-- upnp_daemon : *0x80188500*
-- wsc msg monitor thread : *0x801949b4*
-- wscNLEventHandle : *0x80191cf0*
-- RtmpMlmeTask : *0x80069d20*
-- RtmpWscTask : *0x800dd078*
-- RtmpTimerTask : *0x800986a0*
-- RtmpCmdQTask : *0x800b5f90*
+
+| **Thread Name**        | **Address**  |
+|------------------------|--------------|
+| Network alarm support  | *0x8012d1f8* |
+| Network support        | *0x8012bb60* |
+| cpuload                | *0x8011fd70* |
+| SYSLOG Daemon          | *0x8015b998* |
+| DHCP Server            | *0x8015a708* |
+| DNS_daemon             | *0x80198484* |
+| NTP Client             | *0x80195b10* |
+| HTTPD_daemon           | *0x800127fc* |
+| HTTPD_proc             | *0x80012458* |
+| CLI_thread             | *0x8011c6f0* |
+| upnp_main              | *0x801882e8* |
+| monitor_thread         | *0x800059f0* |
+| extender_check         | *0x8000376c* |
+| upnp_daemon            | *0x80188500* |
+| wsc msg monitor thread | *0x801949b4* |
+| wscNLEventHandle       | *0x80191cf0* |
+| RtmpMlmeTask           | *0x80069d20* |
+| RtmpWscTask            | *0x800dd078* |
+| RtmpTimerTask          | *0x800986a0* |
+| RtmpCmdQTask           | *0x800b5f90* |
 
 Also some thread initialisations that are not found in the thread list:
-- PPPX_daemon : *0x8017591c*
-- DHCPC : *0x80157190*
-- MPSThread : *0x8010f37c*
+
+| **Thread Name**        | **Address**  |
+|------------------------|--------------|
+| PPPX_daemon            | *0x8017591c* |
+| DHCPC                  | *0x80157190* |
+| MPSThread              | *0x8010f37c* |
 
 ## Conclusion
 
