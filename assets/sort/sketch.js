@@ -1,5 +1,5 @@
 bars = [];
-barCnt = 200;
+barCnt = 250;
 delay = 20
 
 function setup() {
@@ -53,7 +53,7 @@ function createBars() {
       },
 	  
 	  drawBar: function() {
-        fill(lerpColor(color(119, 204, 219), color(7,130,130), this.value / barCnt));
+		fill(lerpColor(color(7,130,130), color(163, 120, 84), this.value / barCnt));
         rect(map(this.index, 0, barCnt, 0, windowWidth), map(this.value, 0, barCnt, 0, height), (windowWidth / barCnt) / 2, height);
       }
     }
