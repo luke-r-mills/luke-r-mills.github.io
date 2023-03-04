@@ -702,7 +702,7 @@ The controls and game are below, it should be playable if you are viewing on a d
 - **M** : Toggle sound enabled
 - **P** : Toggle the Postprocessing effects
 
-***Note:*** *Works well on Edge, Chrome, and Firefox*
+***Note:*** *Works well on Edge and Firefox*
 
 <html lang="en">
   <head>
@@ -1453,7 +1453,7 @@ The controls and game are below, it should be playable if you are viewing on a d
                 if not in range */
                 if(vUv_copy.x > 1.0 || vUv_copy.y > 1.0 || 
                   vUv_copy.x < 0.0 || vUv_copy.y < 0.0)
-                    tex_pixel = vec4(0.94, 0.83, 0.706, 1);
+                    tex_pixel = vec4(0.584, 0.859, 0.898, 1);
 
                 gl_FragColor = tex_pixel;
               }
