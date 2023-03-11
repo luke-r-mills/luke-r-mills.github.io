@@ -1,14 +1,14 @@
 ---
 published: true
-title : "Cheap Games Console + Controller Teardown"
+title : "🔍 Cheap Games Console + Controller Teardown"
 toc: true
 toc_sticky: true
 categories:
-  - Hardware
   - Reverse Engineering
 tags:
   - Retro Gaming
-  - Aliexpress
+  - Hardware
+  - ESP32
 tagline: "Join me as I take a closer look at a budget games console. I'll be disassembling it, evaluating the hardware, and exploring its features to gain a better understanding of the device. Let's dive in and see what we can learn."
 excerpt: "Lets examine a budget games console. I'll disassemble it, and explore its hardware/features to fully understand the device. Let's dive in."
 header:

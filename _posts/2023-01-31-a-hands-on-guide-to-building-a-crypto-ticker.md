@@ -1,6 +1,6 @@
 ---
 published: true
-title : "A Hands-on Guide to Building a Crypto Ticker"
+title : "⌨️ A Hands-on Guide to Building a Crypto Ticker"
 toc: true
 toc_sticky: true
 categories:
@@ -30,7 +30,7 @@ The ESP8266 is a small microcontroller that boasts WiFi functionality. It is com
 
 To write my code, I used [Arduino](https://www.arduino.cc/) as this makes everything easier and is the go-to for projects like these that involve microcontrollers. It is very easy to add your own libraries, search for and download additional libraries to include in your code, and building and uploading your code to the device. To get going, all you need to do is add the ESP8266 drivers to your board manager in Arduino, select the correct one, build and upload the blink example and you should be good to go.
 
-I highly recommend the [Visual Stuido Code extension for Arduino](https://github.com/microsoft/vscode-arduino), it makes writing libraries, Arduino sketches, and building/uploading code, easy to do on a single window. You can also easily view the Serial output of the device, which is very useful for debugging issues.
+I highly recommend the [Visual Studio Code extension for Arduino](https://github.com/microsoft/vscode-arduino), it makes writing libraries, Arduino sketches, and building/uploading code, easy to do on a single window. You can also easily view the Serial output of the device, which is very useful for debugging.
 
 ## Choices
 

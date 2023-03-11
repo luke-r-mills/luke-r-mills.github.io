@@ -1,15 +1,15 @@
 ---
 published: true
-title : "Analysing a Dirt-cheap Router"
+title : "🐛️ Analysing a Dirt-cheap Router"
 toc: true
 toc_sticky: true
 categories:
-  - Hardware
-  - Reverse Engineering
+  - VR
 tags:
   - Python
   - Debug Interfaces
-  - Aliexpress
+  - RTOS
+  - Hardware
 tagline: "Is it possible for a router that costs as much as a typical takeaway to also provide adequate security? In this article, we explore the security features of the least expensive router found on Aliexpress and aim to find the answer."
 excerpt : "Can a cheap router provide good security? This article investigates by examining the security features of the least expensive router on Aliexpress."
 header:
@@ -46,7 +46,7 @@ Port 80 corresponds to the HTTP server used for configuration of the router, I w
 
 The telnet port is interesting, exposed telnet interfaces are pretty common on older routers, some of them even have no password if you're lucky (or unlucky if its your router).
 
-We know that the default credentials use the username '*admin*', trying this yields an `invalid username` repsonse. Next I tried '*root*', and this got me to the password entry section. I tried '*admin*', empty input, and a bunch of other passwords - none of which yielded anything interesting. Looks like we will have to have a dig around the firmware if we can get to it!
+We know that the default credentials use the username *admin*, trying this yields an `invalid username` repsonse. Next I tried *root*, and this got me to the password entry section. I tried *admin*, empty input, and a bunch of other passwords - none of which yielded anything interesting. Looks like we will have to have a dig around the firmware if we can get to it!
 
 ## Hardware
 
@@ -186,11 +186,11 @@ Setting this address in the memory map yields a decent decompilation with some e
 
 ### Telnet Backdoor Password
 
-Now that we have the firmware extracted, we can try and find the password for the telnet backdoor. We know that the username is '*root*', so lets search for that string. Looking at the nearby strings, I saw a string '*cs2012*' that is also referenced in the same function that '*root*' is. 
+Now that we have the firmware extracted, we can try and find the password for the telnet backdoor. We know that the username is *root*, so lets search for that string. Looking at the nearby strings, a string that caught my eye was ***cs2012***, it is also referenced in the same function that *root* is. 
 
 ![telnet_pwd.PNG]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router/telnet_pwd.PNG)
 
-Attempting to use '*cs2102*' as the password yielded a successful login, and showed an identical interface to that seen throuh the UART interface. This telnet backdoor is on by default, so if you are on the network and know the password, you can dump the config and mess with the flash chip. That doesn't sound very secure!
+Attempting to use ***cs2102*** as the password yielded a successful login, and showed an interface identical to that seen through the UART. This telnet backdoor is on by default, so if you are on the network and know the password, you can dump the config and mess with the flash chip. That doesn't sound very secure!
 
 ## Web Interface
 
@@ -202,49 +202,48 @@ There really isn't much to the web interface, it just offers all your basic rout
 
 ### Authentication
 
-The authentication mechanism uses the HTTP basic authentication. The basic authentication data is just the base64 encoding of the username password pair, so `admin:password` in this case. As this is HTTP, no encryption takes place, so if this is sniffed then thats an easy admin password steal.
+The authentication mechanism uses the HTTP basic authentication. The basic authentication data is just the base64 encoding of the username password pair, so `admin:*password*` in this case. As this is HTTP, no encryption takes place, so if this is sniffed then thats an easy admin password steal.
 
 ![auth.PNG]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router/auth.PNG)
 
-The web interface sends the encoded credentials with every request, so a MITM attack is far more damaging. HTTP basic authentication is also very weak, and is easy to brute-force/perform a dictionary attack with something like THC-hydra, just make sure to clear the log once the password is recovered as every attempt is logged!
+The web interface sends the encoded credentials with every request, so a MITM attack is far more damaging. HTTP basic authentication is also very weak, and is easy to brute-force/perform a dictionary attack with something like THC-hydra. Just make sure to clear the log once the password is recovered as every attempt is logged!
 
 ![attempts.PNG]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router/attempts.PNG)
 
-The size of the admin password can be between 1 and 32, there is no minimum size check which is interesting. They also only allow the use of letters and numbers, so if brute forcing the password, you don't need to worry about special characters which is nice of them.
+The size of the admin password can be between 1 and 32, there is no minimum size check which is interesting. They also only allow the use of letters and numbers, so if brute forcing the password, you don't need to worry about special characters - how generous!
 
 ![numbers_and_letters.PNG]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router/numbers_and_letters.PNG)
 
 ### Capturing Commands
 
 When you execute the commands on the web interface, as they just use HTTP for their communications, we can simply see in plaintext the commands being sent from the web interface to the router. As an example, we can capture the following command that changes the admin password:
-- CMD=SYS
-- GO=admin.htm
-- SET0=16843264
 
-Clearly this is setting the `SYS_ADMPASS` value in the config file, and it is referencing it with some id. Where do these command id's come from?
+![admin_pwd_change.PNG]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router/admin_pwd_change.PNG)
+
+It is safe to assume that this is somehow setting the `SYS_ADMPASS` value in the config file, but it is referencing it with some weird ID? Where do these command ID's come from?
 
 ### The Numbers Mason
 
-Capturing a few more commands, the id doesn't really show any patterns in its decimal form - converting the *SYS_ADMPASS* id to hex yields `0x1010200`, which makes more sense.
+Capturing a few more commands, the ID doesn't really show any patterns in its decimal form - converting the *SYS_ADMPASS* ID to hex yields `0x1010200`, which makes more sense.
 
 ![mason.PNG]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router/mason.PNG)
 
 Capturing and converting the decimal ID's for a few more entries yielded the following:
-- [0-1] : Module ID, e.g. SYS=1, WAN=3
-- [2-3] : Value ID, e.g. SYS_ADMPASS, WAN_IP
-- [4-5] : Value type:
-	- 01 : Number
-    - 02 : String
-    - 03 : IP address
-    - 04 : MAC address
-- [6-7] : Always 0
+- **[0 - 1]** : Module ID, e.g. SYS=1, WAN=3
+- **[2 - 3]** : Value ID, e.g. SYS_ADMPASS, WAN_IP
+- **[4 - 5]** : Value type:
+	- *01* : Number
+    - *02* : String
+    - *03* : IP address
+    - *04* : MAC address
+- **[6 - 7]** : Always 0
 
-As an example, consider the following value, `LAN_DHCPD_START=192.168.188.2` with id `0x2050300`:
-- LAN module, so module id is 2
-- 5th command in the LAN module, so command id is 5
+As an example, consider the following value, `LAN_DHCPD_START=192.168.188.2` with ID `0x2050300`:
+- LAN module, so module ID is 2
+- 5th command in the LAN module, so command ID is 5
 - IP address, so type is 3
 
-The values of all id's of the entries can be checked with the *cfg get id* method, which returns the name (and value if there is one) of the associated config entry. Using this command, I noticed that I was able to find values that were not listed in the config, so I made a quick Python script to essentially brute force the id's to get every possible value in the config. This gave me roughly 150 more entries than are visible in the config.
+The values of all ID's of the entries can be checked with the *cfg get ID* method on the command line, which returns the name (and value if there is one) of the associated config entry. Using this command, I noticed that I was able to find values that were not listed in the config, so I made a quick Python script to essentially brute force the ID's to get every possible value in the config. This gave me roughly 150 more entries than are visible in the config.
 
 ### Updating Any Config Value via HTTP
 
