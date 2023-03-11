@@ -200,7 +200,7 @@ The function generates the heights, creates a Plane with the [*PlaneGeometry*](h
 
 Lets see how it looks:
 
-![hills_textured.png]({{site.baseurl}}/assets/images/making_a_vaporwave_game_with_three_js/hills_textured.png)
+![hills_textured.PNG]({{site.baseurl}}/assets/images/making_a_vaporwave_game_with_three_js/hills_textured.PNG)
 
 ### Sun
 
@@ -252,7 +252,7 @@ You can see in the function that we initialise the geometry of the Sun as a circ
 
 The fragment shader seen above calculates the mix value, which is the y coordinate of the pixel divided by 7000 (the height of the mesh). This is then used to map the pixel colour between the two colours (`color1` and `color2`) using the `mix` function. The pixel colour is then set by setting the `gl_FragColor` variable to the `gradient` colour (plus the alpha channel). Now we have a sun with a great-looking gradient:
 
-![hills_with_sun.png]({{site.baseurl}}/assets/images/making_a_vaporwave_game_with_three_js/hills_with_sun.png)
+![hills_with_sun.PNG]({{site.baseurl}}/assets/images/making_a_vaporwave_game_with_three_js/hills_with_sun.PNG)
 
 ### Buildings
 

@@ -45,11 +45,11 @@ Encoding is the process of converting data from one format, such as encrypted by
 
 Note that encoding ***IS NOT*** encryption, a base64 string can easily be decoded with no cryptographic material to get the original text. For example, here is the encoded form of `helloworld` using CyberChef:
 
-![to_base64.png]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/to_base64.png)
+![to_base64.PNG]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/to_base64.PNG)
 
 And here is the decoding result:
 
-![from_base64.png]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/from_base64.png)
+![from_base64.PNG]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/from_base64.PNG)
 
 ### Encryption
 
@@ -59,7 +59,7 @@ A very commonly used standard of encryption is AES (Advanced Encryption Standard
 
 If you have ever heard about ransomware in the news, encryption is utilised by this malicious software to encrypt all of the data on the computer. It will then force the user to do something to get the key and decrypt their data - usually involving cryptocurrencies. They are unable to decrypt their data as they do not know the key used to encrypt it!
 
-![wannacry.png]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/wannacry.png)
+![wannacry.PNG]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/wannacry.PNG)
 
 ### Hashing
 
@@ -67,7 +67,7 @@ Hashing is a very useful cryptographic tool - it is theoretically a one-way func
 
 It is useful in password storage as you never have to store the original password anywhere, you can just store the hash. To check an entered password, you can simply hash the provided input, and compare it with what you have stored. Simple enough!
 
-![hashing.png]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/hashing.png)
+![hashing.PNG]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/hashing.PNG)
 
 ## Components
 
