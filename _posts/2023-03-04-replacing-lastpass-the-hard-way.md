@@ -78,7 +78,7 @@ With that out of the way, lets talk about how we are going to make this work, an
 - ***ATMEL 24C256 EEPROM*** : This is an external EEPROM (Electrically Erasable Programmable Read-Only Memory) that will be used for the storage of credentials. This is necessary as the internal ESP8266 EEPROM is only 512 bytes. This device uses [I2C](https://learn.sparkfun.com/tutorials/i2c/all), so only requires a couple of pins to be connected (aside from power).
 
 Here is everything connected together:
-![layout1.png]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/layout1.png)
+![layout1.PNG]({{site.baseurl}}/assets/images/replacing_lastpass_the_hard_way/layout1.PNG)
 
 ## Software
 
