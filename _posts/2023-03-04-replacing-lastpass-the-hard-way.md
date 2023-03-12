@@ -364,7 +364,7 @@ With all of the necessary functionality, it was pretty simple to implement the c
 
 ## Conclusion
 
-This was a pretty fun project, it allowed me to prove to myself that I understand basic cryptography, and I can incorporate it into a simple client-server infrastructure. If you want to check out all of the code, it is on my github, feel free to take it and improve (or fix) it. 
+This was a pretty fun project, it allowed me to prove to myself that I understand basic cryptography, and I can incorporate it into a simple client-server infrastructure. If you want to check out all of the code, it is [on my github](https://github.com/luke-r-mills/Vault), feel free to take it and improve (or fix) it. 
 
 At the end of the day, this device does an excellent job over the standard pen and paper approach of password storage, but using some offline password storage solution such as [Keepass](https://keepass.info/), and storing the database on an encrypted USB stick, will offer much more security than my attempt - so use this at your own risk!
 
