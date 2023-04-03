@@ -19,6 +19,28 @@ header:
   #caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
 
+# What is a buffer overflow?
+
+As most of the observed issues are buffer overflows, it would be a good idea to describe what they are and how they work. To put it into a single sentence, it is when a buffer is filled with more data than it can handle, therefore overflowing and writing adjascent contents on either the stack or the heap memory. Buffer overflows can cause crashes, and can also be leveraged to gain code execution on the device running the affected code.
+
+![buffer-overflow-illustration.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_2/buffer-overflow-illustration.png)
+
+In terms of stack overflows, these are pretty easy to exploit. If you overflow a buffer on the stack, at some point you will eventually overwrite the return address of the function. This means you can send the control flow of the function wherever you want. If there are no mitigations, you can generate 'shellcode' (named because it is usually used to pop a shell) to get code execution, you just need to set the return address to the start of your shellcode (NOP-sledding can make it easier to increase reliability of exploit in some cases).
+
+![buffer_overflow_attack.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_2/buffer_overflow_attack.png)
+
+## ROP (Return-Oriented Programming)
+
+If NX (non-executable stack) is enabled, you cannot write shellcode to the stack and execute it - bummer. What you can do however is utilise code which is already on the device, one of these techniques is ROP (Return-Oriented Programming). This works by finding 'gadgets' that contain desirable instructions, and are usually found at the end of functions (their last few instructions). We use the end of functions so that we can maintain control of the program counter, we can craft a chain containing gadget addresses in the correct location to be loaded into the return address register (*ra* on MIPS) from the stack, allowing us to chain together our specified gadgets. 
+
+Tools such as [Ropper](https://github.com/sashs/Ropper) can be used to search for desirable gadgets, and tools like [angrop](https://github.com/angr/angrop) can even leverage symbolic execution to generate ROP-chains for you! 
+
+![rop_gadgets.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_2/rop_gadgets.png)
+
+Luckily in this context there are no mitigations, so we should be able to run shellcode on the device; however, we might have to use ROP at some point to get to the shellcode - definitely worth knowing about!
+
+![rop_joke.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_2/rop_joke.png)
+
 # Finding Interesting Functions
 
 Most bugs in embedded system firmware written in C/C++ will be a result of using unsafe functions such as strcpy, sprintf, etc. Our binary doesn't have symbols, which means none of these fucnctions are identifiable - so we need to find them. 
