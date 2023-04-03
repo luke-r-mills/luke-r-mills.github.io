@@ -1,6 +1,6 @@
 ---
 published: true
-title : "🐛️ Analysing a Dirt-cheap Router"
+title : "🐛️ Analysing a Dirt-cheap Router: Getting Started"
 toc: true
 toc_sticky: true
 categories:
@@ -10,7 +10,7 @@ tags:
   - Debug Interfaces
   - RTOS
   - Hardware
-tagline: "Is it possible for a router that costs as much as a typical takeaway to also provide adequate security? In this article, we explore the security features of the least expensive router found on Aliexpress and aim to find the answer."
+tagline: "Is it possible for a router that costs as much as a typical takeaway to also provide adequate security? In this series of blogs, we investigate the level of security provided by the least expensive router found on Aliexpress. First of all, lets look at what we are working with, and try and get some firmware."
 excerpt : "Can a cheap router provide good security? This article investigates by examining the security features of the least expensive router on Aliexpress."
 header:
   teaser: /assets/images/analysing_a_dirt_cheap_router/mcu.jpg
@@ -346,6 +346,8 @@ Also some thread initialisations that are not found in the thread list:
 
 ## Conclusion
 
-As expected, the security on this device is pretty terrible. We found a pre-auth telnet backdoor which basically opens up the entire device, use of weak HTTP authentication for the admin panel with terrible default credentials, and there is likely a fair few more issues deeper in the firmware (which we were able to extract and perform a quick surface-level analysis on). I'd spend some more time analysing the firmware, but telnet gives you all the control over the router you would ever need!
+As expected, the security on this device is pretty terrible. We found a pre-auth telnet backdoor which basically opens up the entire device, use of weak HTTP authentication for the admin panel with terrible default credentials, and there is likely a fair few more issues deeper in the firmware (which we were able to extract and perform a quick surface-level analysis on). 
 
 The main lesson learned here is that you usually get what you pay for, so don't cheap out on your router! I combined all of the tools I created into a single Python script, as well as the firmware images I extracted, and put it on [my Github, feel free to take a look!](https://github.com/luke-r-mills/Aliexpress-Router)
+
+In the next blog, we will take a closer look at the firmware, and see if we can identify some bugs to leverage for code execution on the router.

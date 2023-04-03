@@ -1,6 +1,6 @@
 bars = [];
-barCnt = 200;
-delay = 15
+barCnt = 150;
+delay = 20
 
 function setup() {
   var canvas = createCanvas(windowWidth-20, windowHeight/5);
@@ -42,24 +42,29 @@ function createBars() {
   for (var i = 0; i < barCnt; i++) {
     Bar = {
       value: i,
-	  index: i,
-	  
-	  getIndex: function(){
-		return this.index;
-	  },
-	  
-	  setIndex: function(index){
-		this.index = index;  
-	  },
+      index: i,
+      
+      getIndex: function(){
+      return this.index;
+      },
+      
+      setIndex: function(index){
+      this.index = index;  
+      },
 
       getValue: function() {
         return this.value;
       },
 	  
-	  drawBar: function() {
-		fill(lerpColor(color(111, 26, 7), color(168, 118, 62), this.value / barCnt));
+	    drawBar: function() {
+        if (this.value < barCnt/2 ){
+		      fill(lerpColor(color(0, 48, 145), color(177, 0, 139), this.value / (barCnt/2)));
+        } else {
+          fill(lerpColor(color(177, 0, 139), color(221, 226, 0), (this.value - barCnt/2) / (barCnt/2)));
+        }
         rect(map(this.index, 0, barCnt, 0, windowWidth), map(this.value, 0, barCnt, 0, height), (windowWidth / barCnt) / 2, height - map(this.value, 0, barCnt, 0, height), 5);
       }
+      
     }
     bars.push(Bar);
   }

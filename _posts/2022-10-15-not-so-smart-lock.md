@@ -1,6 +1,6 @@
 ---
 published: true
-title : "🐛 Not-so-smart Lock"
+title : "🐛 Not-so-Smart Lock"
 toc: true
 toc_sticky: true
 categories:
