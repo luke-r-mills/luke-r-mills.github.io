@@ -497,10 +497,19 @@ This code uses null terminators to identify when the string has ended, and takes
 
 If a string such as `a*b*c*d*e*f*g*h*` is set to be the *SYS_NTPSRV* config value, then characters after `c` should be written outside of the allocated buffer on the stack.
 
+# Bug Summary
+
+| Type | Description |
+| - | - | 
+| Pre-auth Telnet Backdoor | A telnet backdoor with default password of 'cs2012' is enabled by default on the router, exposing the eCos CLI running on the router. |
+| Post-auth Arbitrary Config Modification | By reversing the ID's of various config values on the router, it is possible to modify any value in the config used by the device via an authenticated HTTP request. |
+| Post-auth Stack Overflow | By setting the value of *WLN_SSID1* to a large string in the config and restarting the router, a stack-based buffer overflow occurs. |
+| Post-auth Stack Overflow | If the value of *RT_ADD* in the config is set to a large string, and a HTTP *RT_ADD* is sent to the router, a stack-based buffer overflow occurs. |
+| Pre-auth Null Pointer Dereference | Due to an assumption in the HTTP handler that a *Host* header will be present, a null pointer dereference occurs when a specific *User-Agent* header is sent, leading to a system crash. |
+| Pre-auth Stack Overflow | In the UPnP M-SEARCH message handler, and unsafe strcpy call is used which causes a stack-based buffer overflow if a large *uuid* value is sent. |
+
 # Conclusion
 
-Overall, this was a pretty good result, we found lots of useful bugs (almost entirely overflows), and a null pointer dereference. So not only is there a telnet backdoor that can be accessed without the admin password, you can also execute code and crash the router if you are on the network!
+Overall, this was a pretty good result, we found plenty of interesting bugs. Not only is there a telnet backdoor that can be accessed without the admin password, but the pre-auth issues can also allow an attacker to execute code and crash the router if they are on the network!
 
-In the next (and final blog), we will attempt to exploit the UPnP overflow in order to gain remote code execution, and hopefully get the router to do something interesting for us.
-
-![led_flash.jpg]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_2/led_flash.jpg)
+In part 3, we will attempt to exploit the UPnP overflow in order to gain remote code execution, and hopefully get the router to do something interesting for us.
