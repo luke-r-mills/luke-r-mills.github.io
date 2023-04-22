@@ -21,15 +21,15 @@ header:
 
 # ROP (Return-Oriented Programming)
 
-Before we can start ropping around, we need to know what it actually it, and why it works. In the previous blog, I explained a bit about how stack-based buffer overflows can be turned into code execution by overwriting the return address, and how shellcode can be used to control the target. However, if NX (non-executable stack) is enabled, you cannot write shellcode to the stack and execute it - bummer. 
+Before we can start ropping around, we need to know what it actually is, and why it works. In the previous blog, I explained a bit about how stack-based buffer overflows can be turned into code execution by overwriting the return address, and how shellcode can be used to control the target. However, if NX (non-executable stack) is enabled, you cannot write shellcode to the stack and execute it - bummer. 
 
-What you can do however is utilise code which is already on the device, one of these techniques is ROP (Return-Oriented Programming). This works by finding 'gadgets' that contain desirable instructions, and are usually found at the end of functions (their last few instructions, a.k.a. the function epilogue). We use the end of functions so that we can maintain control of the program counter/return address, we can craft a chain containing gadget addresses in the correct locations to be loaded into the return address register (*ra* on MIPS) from the stack, allowing us to chain together our specified gadgets.
+What you can do however is utilise code which is already on the device, one of these techniques is ROP (Return-Oriented Programming). This works by finding 'gadgets' that contain desirable instructions, and are usually found at the end of functions (their last few instructions, a.k.a. the function epilogue). We use the end of functions so that we can maintain control of the program counter/return address, we can craft a chain containing gadget addresses in the correct locations to be loaded into the return address register (*ra* on MIPS) from the stack, allowing us to chain together our gadgets.
 
 Tools such as [Ropper](https://github.com/sashs/Ropper) can be used to search for desirable gadgets, and tools like [angrop](https://github.com/angr/angrop) can even leverage symbolic execution to generate ROP-chains for you! 
 
 ![rop_gadgets.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_3/rop_gadgets.png)
 
-Luckily in this context there are no mitigations, so we should be able to run shellcode on the device; however, for the sake of completeness, I am going to avoid shellcode for now and see if I can get the router to do something interesting using only ROP - which should be a fun challenge.
+Luckily in this context there are no mitigations, so we should be able to run shellcode on the device. However, for the sake of completeness, I am going to avoid shellcode for now and see if I can get the router to do something interesting using only ROP - which should be a fun challenge.
 
 ![rop_joke.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_3/rop_joke.png)
 
@@ -39,13 +39,13 @@ We need to know a bit about the target architecture before we can start finding 
 
 ## Registers
 
-We can see a dump of the registers when the router crashes, knowledge of what these registers are for will prove very useful when developing our rop-chain - I'll only explain the most useful ones here.
+We can see a dump of the registers when the router crashes, knowledge of each registers intended purpose will prove useful when developing our rop-chain - I'll only explain the most useful ones here.
 
 ![registers.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_3/registers.png)
 
 - ***a0-3*** : Function arguments - when you call `printf("%s", "hello")`, the memory address of "%s" will be in *a0*, and the address of "hello" will be in *a1*.
 - ***v0-1*** : Function return values - when a function is called, you can expect the return values to be in these registers. E.g. if you called *strlen*, the length would be found in *v0* after the function returned.
-- ***t0-9*** : Temporary caller saved registers - if the instructions have stuck to the MIPS calling convention, these are not guaranteed to be the same after a function return.
+- ***t0-9*** : Temporary caller saved registers - if the instructions abide to the MIPS calling convention, these are not guaranteed to be the same after a function return.
 - ***s0-7*** : Callee saved registers - these are guaranteed to be the same after a function return, usually done by saving them to the stack during the function prologue, and restoring them during the epilogue.
 - ***sp*** : This usually points to the current top of the stack, which is used for managing function calls and local variables.
 - ***pc*** : The program counter register stores the memory address of the next instruction to be executed -  we want to control this.
@@ -85,7 +85,7 @@ In the case of this device, they use the latter, specifically the *$tx* register
 
 ## Looking For Gadgets
 
-When constructing the chain, we need to ensure that we do not lose control of the *$ra*/*$pc*. We can ensure control is maintained by using gadgets that load the return address off of the stack (which we can set to be the next gadget we want to load). We should also be careful of the registers that we 'clobber' in our gadgets, which is a term for the registers impacted by the gadgets. 
+When constructing the chain, we need to ensure that we do not lose control of the *$ra*/*$pc*. We can ensure control is maintained by using gadgets that load the return address off of the stack (which we can set to be the next gadget we want to load). We should also be careful of the registers that we 'clobber' in our gadgets, which is a term for the registers impacted by the gadget. 
 
 We also don't really want gadgets that use a huge chunk of stack space, e.g., a gadget that loads the return address from *0x1000($sp)*, as that would fill our payload with loads of padding.
 
@@ -111,7 +111,7 @@ I mentioned Ropper earlier, but I thought I would knock together a quick set of 
 
 In some binaries without symbols, finding functions can be pretty difficult - especially if things like debug strings have been stripped out or source code is not available. Luckily for us, there are plenty of debug strings that can be used to identify loads of primitive C functions, such as *socket*, *sendto*, *recvfrom*, *setsockopt*, etc. 
 
-I also identified other functions such as *sleep*, *malloc*, and *free* by googling some debug strings and finding source code online, as this is a Realtek SDK it is pretty simple to find some matching source code. Then it is just a matter of comparing it against what you have in Ghidra, and you can easily name plenty of functions.
+I also identified other functions such as *sleep*, *malloc*, and *free* by googling some debug strings and finding source code online, as this is a Realtek SDK it is pretty simple to find. Then it is just a matter of comparing it against what you have in Ghidra, and you can easily name plenty of functions.
 
 # Building the Chain
 
@@ -169,7 +169,7 @@ chain += p32(0x11e670 + base_address) # ra
 
 `int socket(int domain, int type, int protocol);`
 
-The *socket* function takes 3 arguments - *domain*, *type*, and *protocol*. We want *domain* to be *AF_INET* which corresponds to a value of 2. Then we want type to be *SOCK_DGRAM*, which is also 2. The final argument is then 0 as we want the OS to determien the protocol based on the *domain* and *type* values we provided. The code below adds gadgets that set these values:
+The *socket* function takes 3 arguments - *domain*, *type*, and *protocol*. We want *domain* to be *AF_INET* which corresponds to a value of 2. Then we want type to be *SOCK_DGRAM*, which is also 2. The final argument is then 0 as we want the OS to determine the protocol based on the *domain* and *type* values we provided. The code below adds gadgets that set these values:
 
 ```python
 ## Set first argument for socket to 2
@@ -196,9 +196,9 @@ chain += p32(0x57864 + base_address) # ra
 
 To get 2 into *$a2*, a single gadget didn't exist that could achieve this, so I chained a couple of nicer gadgets together to achieve the same result. 
 
-It is worth highlighting that the *$sp* is at the 'top' of the gadget - let me explain. For the 'add 2 to a1' gadget for example, *$s0* is being loaded at an offset of 0 from *$sp* with the `lw $s0, ($sp)` instruction, and then *$ra* is being loaded at an offset of 4 from *$sp* with `lw $ra, 4($sp)`. The loaded *$s0* is above *$ra* in the chain construction, so you can imagine the stack pointer being at the start of *$s0*. I've found that to be the easiest way to visualise the chain as you build it, and nicely compartmentalises each gadget used in the chain. 
+It is worth highlighting that the *$sp* is at the 'top' of the gadget - let me explain. For the 'add 2 to a1' gadget for example, *$s0* is being loaded at an offset of 0 from *$sp* with the `lw $s0, ($sp)` instruction, and then *$ra* is being loaded at an offset of 4 from *$sp* with `lw $ra, 4($sp)`. The loaded *$s0* is above *$ra* in the chain construction, so you can imagine the stack pointer being at the start of *$s0*. I've found this to be the easiest way to visualise the stack pointer location as you build the chain, and it nicely compartmentalises each gadget used in the chain. 
 
-Now, we need to actually call *socket*, we know the address of socket, so we can simply load the address of this function into a register, and then use a `jalr` call to call the function at the address in our register. After looking through a few gadgets, *$v0* was the best candidate, so the following gadgets were chained together to call *socket*:
+Now, we need to actually call *socket*. We know the address of socket, so we can simply load the address of this function into a register, and then use a `jalr` call to call the function at the address in our register. After looking through a few gadgets, *$v0* was the best candidate, so the following gadgets were chained together to call *socket*:
 
 ```python
 # Load address of socket into v0
@@ -216,7 +216,7 @@ chain += p32(0xdeadbeef) # s2
 chain += p32(0x185e38 + base_address) # ra
 ```
 
-That 2nd gadget is not the prettiest as it uses a lot of padding, but the only other gadget that contained the `jalr $v0;` instruction immediately wiped out the *sockfd* returned by *socket*, which is pretty important! Sometimes you need to accept not all gadgets will be pretty!
+That 2nd gadget is not the prettiest as it uses a lot of padding, but the only other gadget that contained the `jalr $v0;` instruction immediately wiped out the *sockfd* returned by *socket*, which is pretty important! Sometimes you need to accept not all gadgets will be pretty.
 
 If you look at the last gadget, we set the value of *$s0* to be *sockfd_addr*, which is an address that we will be using to store our *sockfd* returned by *socket* for use later. We can then use the following gadget to store *$v0* (containing our return value) to *($s0)*:
 
@@ -375,7 +375,7 @@ chain += b'b' * 0xc
 chain += p32(0x57864 + base_address) # ra
 ```
 
-With these arguments set, we can finally construct the *sockaddr_in* struct with the following gadgets - the comment do a pretty good job explaining what is happening. We are basically copying the memory address with the desired values (*0x0* *0x2*) I mentioned earlier, and appending the IP address of the target:
+With these arguments set, we can finally construct the *sockaddr_in* struct with the following gadgets - the comments do a pretty good job explaining what is happening. We are basically copying the memory address with the desired values (*0x0* *0x2*) I mentioned earlier, and appending the IP address of the target:
 
 ```python
 # s1 has our sockaddr address, load address of afinet into v0
