@@ -53,7 +53,7 @@ We can see a dump of the registers when the router crashes, knowledge of each re
 
 ## Instructions
 
-***Note:*** In MIPS assembly, if brackets are around a register value, e.g. ($s0), the instruction is refering to the value pointed to by the memory address strored in the registers (indirect addressing) - kind of like dereferencing a pointer in C. 
+***Note:*** In MIPS assembly, if brackets are around a register value, e.g. ($s0), the instruction is referring to the value pointed to by the memory address strored in the registers (indirect addressing) - kind of like dereferencing a pointer in C. 
 
 - `move $dst, $src` : Moves the contents of *$src* to *$dst* - this is obviously useful if you have a gadget for a specific register, say *$a0*, but the value is in *$s0*, you would find a gadget contianing `move $a0, $s0`.
 - `lw $dst, offset($src)` : Loads a word from memory located at *$src* + offset into *$dst* - This is usually the instruction that gets our foot in the door, as it loads some stack pointer offset into *$ra* (`lw $ra, 4($sp)` for example)

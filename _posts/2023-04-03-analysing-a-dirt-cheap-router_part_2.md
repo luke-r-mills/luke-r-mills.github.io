@@ -379,7 +379,7 @@ Except 2: TLBL
 
 This means that any unauthenticated user on the network is able to crash the router with a single HTTP command, which isn't ideal.
 
-# Pre-auth UPNP Stack-based Buffer Overflow
+# Pre-auth UPNP Stack-based Buffer Overflows
 
 After staring at the HTTP server for a while, I wanted a change of scenery, so I turned my attention to the UPNP service running on the router. 
 
@@ -441,6 +441,24 @@ And here are the offsets of the data loaded into the registers:
 | *s3* | 144 |
 | *ra* | 148 |
 
+## More Crashes
+
+It turns out that this buffer is used in multiple calls to *memcpy*, where the length is calculated using a version of *strpbrk*. The *strpbrk* function finds any occurences of characters in a string, returning the index of the character if one is found. 
+
+As it is used in this function, it takes the *ST* parameter and tries to see if any default UPnP strings are present, *urn:schemas-wifialliance-org:device:* for example. If one of these strings is found, it uses *strpbrk* to find the next ':' character, returning the index of the character if it is found. This index is then used as the number of bytes to copy from the *ST* parameter into the 132 byte stack buffer we saw earlier. 
+
+Therefore, if we provide one of these default strings, add a large number of bytes, and then add a ':' at the end, we trigger another overflow into the same buffer. Technically there are two distinct *memcpy* calls with different default strings, but I'll only count this as a single bug (it is also pretty similar to the previous bug, it copies to the same buffer after all).
+
+Here are the four ST values that will trigger the overflow - the rest of the message is identical to the message used to trigger the other *uuid* bug:
+- `ST:urn:schemas-upnp-org:device:aaaaa...aaaaa:`
+- `ST:urn:schemas-upnp-org:service:aaaaa...aaaaa:`
+- `ST:urn:schemas-wifialliance-org:service:aaaaa...aaaaa:`
+- `ST:urn:schemas-wifialliance-org:device:aaaaa...aaaaa:`
+
+Here is the code, I've colour coded the default values and their corresponding *memcpy* calls (as well as the *strcpy* mentioned earlier):
+
+![upnp_bugs.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_2/upnp_bugs.png)
+
 # Honourable Mention - Possible NTP Config Bug
 
 I haven't been able to test that this bug is useful/works, as I believe the router checks that it has an internet connection before it sends any NTP requests (which I do not want to provide it with!). I've been able to get it to call the `ntp_update` function, but never the actual function that sends the request and handles the response.
@@ -494,7 +512,8 @@ If a string such as `a*b*c*d*e*f*g*h*` is set to be the *SYS_NTPSRV* config valu
 | Post-auth Stack Overflow | By setting the value of *WLN_SSID1* to a large string in the config and restarting the router, a stack-based buffer overflow occurs. |
 | Post-auth Stack Overflow | If the value of *RT_ADD* in the config is set to a large string, and a HTTP *RT_ADD* is sent to the router, a stack-based buffer overflow occurs. |
 | Pre-auth Null Pointer Dereference | Due to an assumption in the HTTP handler that a *Host* header will be present, a null pointer dereference occurs when a specific *User-Agent* header is sent, leading to a system crash. |
-| Pre-auth Stack Overflow | In the UPnP M-SEARCH message handler, and unsafe strcpy call is used which causes a stack-based buffer overflow if a large *uuid* value is sent. |
+| Pre-auth *strcpy* Stack Overflow | In the UPnP M-SEARCH message handler, and unsafe *strcpy* call is used which causes a stack-based buffer overflow if a large *uuid* value is sent. |
+| Pre-auth *memcpy* Stack Overflow | In the UPnP M-SEARCH message handler, a combination of a *strpbrk* call to obtain an unchecked length used by a *memcpy* call causes a stack-based buffer overflow if a specially crafted *ST* value is sent. |
 
 # Conclusion
 
