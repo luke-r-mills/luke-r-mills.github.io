@@ -108,7 +108,7 @@ The created demo sketch sets GPIO pins 16 and 17 to be outputs (latch and pulse)
 
 ![controller_demo.jpg]({{site.baseurl}}/assets/images/cheap_and_cheerful_400_in_1/controller_demo.jpg)
 
-Messing with the implementation some more, you can basically 'poll' the controller as often as you want, so I removed all of the delays from the controller poll function. Obviously the more polls you send, the less input lag you will have with the remote. I made a [small arduino library](https://github.com/luke-r-mills/RetroController) that allows you to add one of these controllers to projects (I also included the demo sketch). 
+Messing with the implementation some more, you can basically 'poll' the controller as often as you want, so I removed all of the delays from the controller poll function. Obviously the more polls you send, the less input lag you will have with the remote. I made a [small arduino library](https://github.com/luke-r-m/RetroController) that allows you to add one of these controllers to projects (I also included the demo sketch). 
 
 It would be rude of me to not use this in an actual game, so I ported an [implementation of snake for Arduino](https://github.com/Stiju/arduino_snake) I found on github that used an OLED display to use my library and the controller. 
 

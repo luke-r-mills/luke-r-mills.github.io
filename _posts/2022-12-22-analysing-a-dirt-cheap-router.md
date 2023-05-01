@@ -348,6 +348,6 @@ Also some thread initialisations that are not found in the thread list:
 
 As expected, the security on this device is pretty terrible. We found a pre-auth telnet backdoor which basically opens up the entire device, use of weak HTTP authentication for the admin panel with terrible default credentials, and there is likely a fair few more issues deeper in the firmware (which we were able to extract and perform a quick surface-level analysis on). 
 
-The main lesson learned here is that you usually get what you pay for, so don't cheap out on your router! I combined all of the tools I created into a single Python script, as well as the firmware images I extracted, and put it on [my Github, feel free to take a look!](https://github.com/luke-r-mills/Aliexpress-Router)
+The main lesson learned here is that you usually get what you pay for, so don't cheap out on your router! I combined all of the tools I created into a single Python script, as well as the firmware images I extracted, and put it on [my Github, feel free to take a look!](https://github.com/luke-r-m/Aliexpress-Router)
 
 In the next blog, we will take a closer look at the firmware, and see if we can identify some bugs to leverage for code execution on the router.

@@ -482,3 +482,5 @@ So, we managed to retrieve the admin password pre-auth through an overflow we ex
 
 ![im_in.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_3/im_in.png)
 
+All the PoC's for crashes, as well as ROP exploits are all in the [github for this project](https://github.com/luke-r-m/Aliexpress-Router).
+

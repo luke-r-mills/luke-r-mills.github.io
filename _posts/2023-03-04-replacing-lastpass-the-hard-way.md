@@ -73,7 +73,7 @@ It is useful in password storage as you never have to store the original passwor
 
 With that out of the way, lets talk about how we are going to make this work, and the components we will use for the device:
 - ***ESP8266 NodeMCU v1.0*** : The best microcontroller I've used (so far). Can be programmed with the Arduino IDE and it's great to work with. This will be the heart of the device.
-- ***IR Reciever and Remote*** : This will provide the interaction for the device, I'm familiar with this as I've used it for my previous [ESP8266 project](https://luke-r-mills.github.io/coding/a-hands-on-guide-to-building-a-crypto-ticker/).
+- ***IR Reciever and Remote*** : This will provide the interaction for the device, I'm familiar with this as I've used it for my previous [ESP8266 project](https://luke-r-m.github.io/coding/a-hands-on-guide-to-building-a-crypto-ticker/).
 - ***ST7735 1.77" LCD Display*** : This will help the user see what they are doing, and remove the need for some external screen. Again, I've used this in a previous project so all good!
 - ***ATMEL 24C256 EEPROM*** : This is an external EEPROM (Electrically Erasable Programmable Read-Only Memory) that will be used for the storage of credentials. This is necessary as the internal ESP8266 EEPROM is only 512 bytes. This device uses [I2C](https://learn.sparkfun.com/tutorials/i2c/all), so only requires a couple of pins to be connected (aside from power).
 
@@ -364,7 +364,7 @@ With all of the necessary functionality, it was pretty simple to implement the c
 
 ## Conclusion
 
-This was a pretty fun project, it allowed me to prove to myself that I understand basic cryptography, and I can incorporate it into a simple client-server infrastructure. If you want to check out all of the code, it is [on my github](https://github.com/luke-r-mills/Vault), feel free to take it and improve (or fix) it. 
+This was a pretty fun project, it allowed me to prove to myself that I understand basic cryptography, and I can incorporate it into a simple client-server infrastructure. If you want to check out all of the code, it is [on my github](https://github.com/luke-r-m/Vault), feel free to take it and improve (or fix) it. 
 
 At the end of the day, this device does an excellent job over the standard pen and paper approach of password storage, but using some offline password storage solution such as [Keepass](https://keepass.info/), and storing the database on an encrypted USB stick, will offer much more security than my attempt - so use this at your own risk!
 
