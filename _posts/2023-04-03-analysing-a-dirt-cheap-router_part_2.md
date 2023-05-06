@@ -503,7 +503,7 @@ if (cVar8 != '\0') {
 
 This code uses null terminators to identify when the string has ended, and takes no consideration of how many '\*' have been seen. *Local_6cc* is a 192 byte buffer, and the number of observed '\*' symbols is multiplied by *0x40* to get the offset in the buffer the server address should be copied. 
 
-If a string such as `a*b*c*d*e*f*g*h*` is set to be the *SYS_NTPSRV* config value, then characters after `c` should be written outside of the allocated buffer on the stack.
+If a string such as `a*b*c*d*e*f*g*h*` is set to be the *SYS_NTPSRV* config value, then characters after `c` should be written outside of the allocated buffer on the stack. The length of each individual URL is also not checked, so in combination about 250 bytes of the config string would be useful in an exploit (which is far better than the other config bugs we discovered earlier).
 
 ## Pre-auth Firmware Upgrade
 
