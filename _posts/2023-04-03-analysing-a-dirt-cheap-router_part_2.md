@@ -507,7 +507,7 @@ If a string such as `a*b*c*d*e*f*g*h*` is set to be the *SYS_NTPSRV* config valu
 
 ## Pre-auth Firmware Upgrade
 
-After staring at the HTTP handler for a while, I noticed a bunch of comments talking about firmware upgrade, writing segments to flash, etc - all before the authentication ever takes place. I haven't been able to prove this, as I don't want to brick the router, and there doesn't seem to be any firmware downloads available anywhere which complicates things slightly.
+After staring at the HTTP handler for a while, I noticed a bunch of comments talking about a firmware upgrade, writing segments to flash, etc - all before the authentication ever takes place. I haven't been able to prove this, as I don't want to brick the router, and there doesn't seem to be any firmware downloads available anywhere which also complicates things slightly.
 
 If you send the following HTTP packet, `process_multipart_for_upgrade:boundary = NULL` is printed to the UART.
 
@@ -518,7 +518,7 @@ Content-Type: multipart/form-data
 CMD=SYS_UPG
 ```
 
-The function that prints this output (0x800068a0) is clearly trying to parse something related to a firmware upgrade. After this function returns, execution jumps further down the HTTP handler to functions that seem to receive, check, and write the new firmware image to flash. All of this occurs before the authentication function is ever called! 
+The function that prints this output (*0x800068a0*) is clearly trying to parse something related to a firmware upgrade. After this function returns, execution jumps further down the HTTP handler to functions that seem to receive, check, and write the new firmware image to flash. All of this occurs before the authentication function is ever called! 
 
 ```c
 iVar5 = strfind(content_type,"multipart/form-data");
