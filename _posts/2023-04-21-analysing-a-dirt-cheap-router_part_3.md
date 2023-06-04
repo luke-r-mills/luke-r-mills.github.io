@@ -472,15 +472,15 @@ And thats the entire chain completed!
 
 ## Does it work?
 
-Setting up Wireshark to view the traffic coming to and from the router, we can see the malicious SSDP payload being sent to the router, and the router responding with a UDP packet on port 4900 containin the admin password : *Aliexpress4Eva*!
+Setting up Wireshark to view the traffic coming to and from the router, we can see the malicious SSDP payload being sent to the router, and the router responding with a UDP packet on port 4900 containig the admin password : *Aliexpress4Eva*!
 
 ![pwned.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_3/pwned.png)
 
 # Conclusion
 
-So, we managed to retrieve the admin password pre-auth through an overflow we exploited using ROP - pretty cool! I've learned a lot about MIPS through this exercise, and although it's not the most common platform to create your first buffer overflow exploit - it doesn't matter because it worked!
+So, we managed to retrieve the admin password pre-auth through an overflow we exploited using ROP - pretty cool! I've learned a lot about MIPS through this exercise, and although it's not the most common platform to create your first buffer overflow exploit - we managed to get it working!
 
 ![im_in.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_3/im_in.png)
 
-All the PoC's for crashes, as well as ROP exploits are all in the [github for this project](https://github.com/luke-r-m/Aliexpress-Router).
+All the PoC's for crashes, as well as ROP exploits are all in the [github for this project](https://github.com/luke-r-m/Chaneve-Router-Analysis).
 
